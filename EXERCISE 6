@@ -1,0 +1,86 @@
+import java.util.Scanner;
+
+public class Floyd {
+    final static int INF = 9999;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the number of vertices: ");
+        int V = sc.nextInt();
+
+        int[][] graph = new int[V][V];
+
+        System.out.println("Enter the adjacency matrix:");
+        System.out.println("(Use " + INF + " for vertices with no direct edge)");
+        
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                graph[i][j] = sc.nextInt();
+            }
+        }
+
+        floyd(graph, V);
+        sc.close();
+    }
+
+    static void floyd(int[][] graph, int V) {
+        int[][] dist = new int[V][V];
+            for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                dist[i][j] = graph[i][j];
+            }
+        }
+        for (int k = 0; k < V; k++) {
+            for (int i = 0; i < V; i++) {
+                for (int j = 0; j < V; j++) {
+                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+        }
+
+        printResult(dist, V);
+    }
+
+    static void printResult(int[][] dist, int V) {
+        System.out.println("\nAll Pairs of Shortest Paths Matrix");
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (dist[i][j] >= INF - 1000)
+                    System.out.print("INF\t");
+                else
+                    System.out.print(dist[i][j] + "\t");
+            }
+            System.out.println();
+        }
+    }
+}
+
+[24bcs126@mepcolinux ex6]$java Floyd
+Enter the number of vertices: 4
+Enter the adjacency matrix:
+(Use 9999 for vertices with no direct edge)
+0
+9999
+3
+9999
+2
+0
+9999
+9999
+9999
+7
+0
+1
+6
+9999
+9999
+0
+
+All Pairs of Shortest Paths Matrix
+0	10	3	4	
+2	0	5	6	
+7	7	0	1	
+6	16	9	0
