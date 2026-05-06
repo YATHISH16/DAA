@@ -1,0 +1,92 @@
+import java.util.*;
+
+class Huffmann {
+    int freq;
+    char c;
+    Huffmann left, right;
+}
+
+class FrequencyComparator implements Comparator<Huffmann> {
+    public int compare(Huffmann x, Huffmann y) {
+        return x.freq - y.freq;
+    }
+}
+
+public class Huffman {
+    public static void printCode(Huffmann root, String s) {
+        if (root.left == null && root.right == null) {
+            System.out.println(root.c + ": " + s);
+            return;
+        }
+        printCode(root.left, s + "0");
+        printCode(root.right, s + "1");
+    }
+
+    public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
+
+        System.out.print("Enter the number of characters: ");
+        int n = s.nextInt();
+
+        PriorityQueue<Huffmann> q = new PriorityQueue<>(n, new FrequencyComparator());
+
+        for (int i = 0; i < n; i++) {
+            Huffmann hn = new Huffmann();
+            
+            System.out.print("Enter character " + (i + 1) + ": ");
+            hn.c = s.next().charAt(0);
+            
+            System.out.print("Enter frequency for '" + hn.c + "': ");
+            hn.freq = s.nextInt();
+            
+            q.add(hn);
+        }
+
+        Huffmann root = null;
+        while (q.size() > 1) {
+            Huffmann x = q.poll();
+            Huffmann y = q.poll();
+            
+            Huffmann f = new Huffmann();
+            f.freq = x.freq + y.freq;
+            f.c = '-';
+            f.left = x;
+            f.right = y;
+            root = f;
+            
+            q.add(f);
+        }
+        
+        System.out.println("\nGenerated Huffman Codes:");
+        if (root != null) {
+            if (root.left == null && root.right == null) {
+                System.out.println(root.c + ": 0");
+            } else {
+                printCode(root, "");
+            }
+        }
+        
+        s.close();
+    }
+}
+
+
+[24bcs126@mepcolinux ex7]$java Huffman
+Enter the number of characters: 5
+Enter character 1: a
+Enter frequency for 'a': 35
+Enter character 2: b
+Enter frequency for 'b': 11
+Enter character 3: c
+Enter frequency for 'c': 20
+Enter character 4: d
+Enter frequency for 'd': 20
+Enter character 5: -
+Enter frequency for '-': 15
+
+Generated Huffman Codes:
+d: 00
+c: 01
+b: 100
+-: 101
+a: 11
