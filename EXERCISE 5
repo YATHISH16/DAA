@@ -1,0 +1,169 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Horspool2 {
+
+    public static int[] preprocess(String pattern) {
+    	int m = pattern.length();
+    	int[] shiftTable = new int[256];
+    	Arrays.fill(shiftTable, m);
+    	for (int j = 0; j < m - 1; j++) {
+        	shiftTable[pattern.charAt(j)] = m - 1 - j;
+    	}
+    	System.out.println("\n--- Shift Table ---");
+    	for (int i = 0; i < 256; i++) {
+        	if (shiftTable[i] != m) {
+            	System.out.println("'" + (char) i + "' : " + shiftTable[i]);
+        	}
+    	}
+    	System.out.println("Other Characters : " + m);
+    	System.out.println("-------------------\n");
+    
+    	return shiftTable;
+	}
+static void search(String text, String pattern) {
+        int n = text.length();
+        int m = pattern.length();
+        int alignments = 0;
+        int comparisons = 0;
+        int index = -1;
+
+        if (m <= n && m > 0) {
+            int[] shiftTable = preprocess(pattern);
+            int i = m - 1; 
+
+            while (i < n) {
+                alignments++;
+                int k = 0;
+                
+                while (k < m) {
+                    comparisons++;
+		    if (pattern.charAt(m - 1 - k) == text.charAt(i - k)) {
+                        k++;
+                    } else {
+                        break;
+                    }
+                }
+
+                if (k == m) {
+                    index = i - m + 1;
+                    break; 
+                }
+                
+                i += shiftTable[text.charAt(i)];
+            }
+        }
+        if (index != -1) {
+            System.out.println("Pattern found at index: " + index);
+        } else {
+            System.out.println("Pattern not found.");
+        }
+        System.out.println("Total Alignments: " + alignments);
+        System.out.println("Total Comparisons: " + comparisons);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter text: ");
+        String text = scanner.nextLine();
+
+        System.out.print("Enter pattern: ");
+        String pattern = scanner.nextLine();
+
+        search(text, pattern);
+
+        scanner.close();
+    }
+}
+
+[24bcs126@mepcolinux ex5]$java Horspool2
+Enter text: hello_world
+Enter pattern: world
+
+--- Shift Table ---
+'l' : 1
+'o' : 3
+'r' : 2
+'w' : 4
+Other Characters : 5
+-------------------
+
+Pattern found at index: 6
+Total Alignments: 3
+Total Comparisons: 7
+[24bcs126@mepcolinux ex5]$cat Counting.java
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Counting {
+
+    public static int[] sort(int[] arr) {
+        int n = arr.length;
+        int[] count = new int[n];
+        int[] sortedArr = new int[n];
+
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (arr[i] < arr[j]) {
+                    count[j]++;
+                } else {
+                    count[i]++;
+                }
+
+            }
+            for (int a:count){
+               System.out.print(a+" ");
+            }
+            System.out.println();
+        }
+
+        for (int i = 0; i < n; i++) {
+            sortedArr[count[i]] = arr[i];
+
+        }
+        return sortedArr;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.print("Enter the number of elements (n): ");
+            int n = scanner.nextInt();
+
+            int[] numbers = new int[n];
+
+
+            System.out.println("Enter " + n + " integers:");
+            for (int i = 0; i < n; i++) {
+                numbers[i] = scanner.nextInt();
+            }
+
+            int[] result = sort(numbers);
+
+            System.out.println("Original: " + Arrays.toString(numbers));
+            System.out.println("Sorted:   " + Arrays.toString(result));
+
+        } catch (Exception e) {
+            System.out.println("Invalid input! Please enter only integers.");
+        } finally {
+            scanner.close();
+        }
+    }
+}
+
+[24bcs126@mepcolinux ex5]$java Counting
+Enter the number of elements (n): 5
+Enter 5 integers:
+4
+6
+1
+2
+8
+2 1 0 0 1 
+2 3 0 0 2 
+2 3 0 1 3 
+2 3 0 1 4 
+Original: [4, 6, 1, 2, 8]
+Sorted:   [1, 2, 4, 6, 8]
